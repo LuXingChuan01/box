@@ -1,14 +1,3 @@
----
-AIGC:
-    Label: "1"
-    ContentProducer: 001191440300708461136T1XGW3
-    ProduceID: 9f7dda3a797c676dc45fb6560b8e64d4_e76d7275ba4c11f1a526525400cd780f
-    ReservedCode1: LO1OPPR/qKYQMMsC9wvTf+Idd/HWKP6w+U+eGcX5C1oCCH1/vH2A2J8y+ZsH5DKJtDGwVCKfgexHbdBDa6pPQOVb1R9g/iJJdcChlOHsnn+8d7F95IY8P7OnrxY+lXWv7FJdfIOSo9LnAL7bOzsLQn0sk8l7WSsmjVI+wW9l3i16WFYQKwca5NqMBEo=
-    ContentPropagator: 001191440300708461136T1XGW3
-    PropagateID: 9f7dda3a797c676dc45fb6560b8e64d4_e76d7275ba4c11f1a526525400cd780f
-    ReservedCode2: LO1OPPR/qKYQMMsC9wvTf+Idd/HWKP6w+U+eGcX5C1oCCH1/vH2A2J8y+ZsH5DKJtDGwVCKfgexHbdBDa6pPQOVb1R9g/iJJdcChlOHsnn+8d7F95IY8P7OnrxY+lXWv7FJdfIOSo9LnAL7bOzsLQn0sk8l7WSsmjVI+wW9l3i16WFYQKwca5NqMBEo=
----
-
 # APNG 制作器（扫描线擦除 / 逐帧）
 
 把若干张图片合成为一张 **APNG 动图**。纯静态、零依赖、零构建，全部在浏览器本地完成，**图片不会上传到任何地方**。
@@ -109,4 +98,3 @@ IEND
 **5. 结构自检。** `APNG.inspectAPNG(bytes)` 可对编码结果做一次结构走查（签名、块顺序、序号连续性、CRC），仅在控制台手工调用，正常流程不依赖它。
 
 > 说明：APNG 是无损容器，不做调色板量化，所以体积通常比 256 色的 GIF 大；这是无损格式的固有代价。本项目的体积控制手段是**帧差增量 + 自动降分辨率**。
-*（内容由AI生成，仅供参考）*
