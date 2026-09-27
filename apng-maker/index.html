@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>APNG 制作器 · 扫描线擦除 / 逐帧</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="logo">◧</span>
+    <div class="brand-text">
+      <h1>APNG 制作器</h1>
+      <p>把若干张图片合成一张动图 · 全部在浏览器本地完成 · 图片不会上传</p>
+    </div>
+  </div>
+  <div class="badge">双击 index.html 即可使用 · 仅支持 Chrome / Edge</div>
+</header>
+
+<main class="layout">
+
+  <!-- ===== 左：图片列表 ===== -->
+  <section id="list-panel" class="panel list-panel">
+    <div class="panel-head">
+      <h2>图片列表 <span id="count" class="count">0</span></h2>
+      <button id="btn-add" class="btn btn-primary btn-sm" type="button">添加图片</button>
+      <input id="file-input" type="file" accept="image/*" multiple hidden />
+    </div>
+
+    <ul id="thumb-list" class="thumb-list"></ul>
+
+    <p id="empty-hint" class="hint">
+      点击「添加图片」选择文件，或把图片拖到这里，也可以直接 <kbd>Ctrl</kbd>+<kbd>V</kbd> 粘贴。
+    </p>
+
+    <div class="list-foot">
+      <button id="btn-clear" class="btn btn-ghost btn-sm" type="button">清空列表</button>
+      <span class="tip">拖拽缩略图调整顺序，悬停点击 × 移除</span>
+    </div>
+  </section>
+
+  <!-- ===== 中：实时预览 ===== -->
+  <section class="panel stage-panel">
+    <div class="panel-head">
+      <h2>实时预览</h2>
+      <div class="playbar">
+        <button id="btn-play" class="btn btn-sm" type="button">暂停</button>
+        <span id="time-info" class="mono">0.00s / 0.00s</span>
+      </div>
+    </div>
+    <div class="stage">
+      <canvas id="preview" width="640" height="360"></canvas>
+    </div>
+    <div class="meta" id="canvas-meta">画布 — × —　·　共 0 帧</div>
+  </section>
+
+  <!-- ===== 右：参数与导出 ===== -->
+  <section class="panel ctrl-panel">
+    <div class="panel-head"><h2>参数</h2></div>
+
+    <div class="field">
+      <label>合成模式</label>
+      <div class="seg" id="mode-seg">
+        <button class="seg-btn is-on" data-mode="scan" type="button">扫描线擦除</button>
+        <button class="seg-btn" data-mode="frames" type="button">普通逐帧</button>
+      </div>
+      <p class="tip">扫描线擦除：一条竖直扫描线匀速从左扫到右，扫过处变为下一张图。</p>
+    </div>
+
+    <div class="field">
+      <label>过渡时长<span class="sub">扫描线从左到右</span></label>
+      <div class="row">
+        <input id="range-transition" type="range" min="0" max="3000" step="50" value="700" />
+        <div class="numbox"><input id="num-transition" type="number" min="0" max="10000" step="50" value="700" /><span>ms</span></div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>每张图停留时长</label>
+      <div class="row">
+        <input id="range-hold" type="range" min="0" max="5000" step="50" value="700" />
+        <div class="numbox"><input id="num-hold" type="number" min="0" max="20000" step="50" value="700" /><span>ms</span></div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>留边背景色<span class="sub">图片比例不一致时</span></label>
+      <select id="sel-bg">
+        <option value="white">纯白</option>
+        <option value="black">纯黑</option>
+        <option value="dominant">首图主色</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label>目标体积</label>
+      <div class="row">
+        <div class="numbox"><input id="num-target" type="number" min="0.05" max="100" step="0.1" value="1.0" /><span>MB</span></div>
+        <label class="check"><input id="chk-unlimited" type="checkbox" /> 不限</label>
+      </div>
+      <p class="tip">超限时按 640 → 480 → 384 → 320 逐级降低分辨率重编，并告知最终降到了多少。</p>
+    </div>
+
+    <button id="btn-export" class="btn btn-primary btn-block" type="button">导出 .apng</button>
+    <p id="status" class="status">等待操作</p>
+
+    <p class="tip">画布比例跟随第一张图，其余图片按 contain 缩放，不裁切。刷新即清空，不留任何数据。</p>
+  </section>
+
+</main>
+
+<script src="apng.js"></script>
+<script src="render.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

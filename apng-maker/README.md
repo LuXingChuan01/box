@@ -1,0 +1,112 @@
+---
+AIGC:
+    Label: "1"
+    ContentProducer: 001191440300708461136T1XGW3
+    ProduceID: 9f7dda3a797c676dc45fb6560b8e64d4_e76d7275ba4c11f1a526525400cd780f
+    ReservedCode1: LO1OPPR/qKYQMMsC9wvTf+Idd/HWKP6w+U+eGcX5C1oCCH1/vH2A2J8y+ZsH5DKJtDGwVCKfgexHbdBDa6pPQOVb1R9g/iJJdcChlOHsnn+8d7F95IY8P7OnrxY+lXWv7FJdfIOSo9LnAL7bOzsLQn0sk8l7WSsmjVI+wW9l3i16WFYQKwca5NqMBEo=
+    ContentPropagator: 001191440300708461136T1XGW3
+    PropagateID: 9f7dda3a797c676dc45fb6560b8e64d4_e76d7275ba4c11f1a526525400cd780f
+    ReservedCode2: LO1OPPR/qKYQMMsC9wvTf+Idd/HWKP6w+U+eGcX5C1oCCH1/vH2A2J8y+ZsH5DKJtDGwVCKfgexHbdBDa6pPQOVb1R9g/iJJdcChlOHsnn+8d7F95IY8P7OnrxY+lXWv7FJdfIOSo9LnAL7bOzsLQn0sk8l7WSsmjVI+wW9l3i16WFYQKwca5NqMBEo=
+---
+
+# APNG 制作器（扫描线擦除 / 逐帧）
+
+把若干张图片合成为一张 **APNG 动图**。纯静态、零依赖、零构建，全部在浏览器本地完成，**图片不会上传到任何地方**。
+
+**双击 `index.html` 就能用** —— 不需要服务器、不需要安装任何东西、不需要联网。只保证 Chrome / Edge。
+
+形态与交互参照 [GlassSky01/Gifer](https://github.com/GlassSky01/Gifer)（Gifer 输出 GIF，本项目输出 APNG）。
+
+---
+
+## 使用方法
+
+1. 点「添加图片」选图（也可以把图片拖到左侧列表，或直接 `Ctrl+V` 粘贴）
+2. 拖拽缩略图调整顺序，悬停点 `×` 移除
+3. 选合成模式、调参数，右侧「实时预览」直接看效果
+4. 点「导出 .apng」下载
+5. 刷新即清空，不留任何数据
+
+从第一张到最后一张循环播放。
+
+### 两种合成模式
+
+| 模式 | 效果 |
+| --- | --- |
+| **扫描线擦除**（默认） | 每次切换时，从左侧出现一条竖直的扫描线，**匀速**向右前进，扫过的位置变成下一张图；扫到右边界后消失，接着停留一会儿再切下一张 |
+| **普通逐帧** | 图片之间直接硬切，每张图完整显示「停留时长」后切下一张 |
+
+### 参数
+
+| 参数 | 默认 | 说明 |
+| --- | --- | --- |
+| 合成模式 | 扫描线擦除 | 逐帧 / 扫描线擦除 |
+| 过渡时长 | 700ms | 扫描线从左走到右的时长（仅扫描线模式生效） |
+| 停留时长 | 700ms | 每张图完全显示后的停顿 |
+| 留边背景色 | 纯白 | 图片比例不一致时的留边颜色，可选纯黑 / 首图主色 |
+| 目标体积 | 1.0MB | 超过就自动降级重编；可勾选「不限」 |
+
+画布比例跟随**第一张图**，其余图片按 `contain` 缩放（不裁切，多余部分用留边背景色填充）；画布最长边上限 1280px，超出等比缩小。
+
+### 自动降级
+
+目标体积超限时，按 **640 → 480 → 384 → 320**（最长边像素）的顺序逐档降低分辨率重编，并在状态栏明确告知降到了多少，例如：
+
+```
+已导出 480×270，共 121 帧，742.3 KB。为压进目标体积，已从 1280×720 降分辨率到 480×270
+```
+
+降到最后一档仍然超限时，会如实提示「体积仍超过目标，已降至最小档 W×H」。
+
+---
+
+## 文件
+
+| 文件 | 作用 |
+| --- | --- |
+| `index.html` | 页面结构：图片列表、实时预览、参数面板；用 `<link>` / `<script src>` 引入本地资源 |
+| `style.css` | 全部样式（布局、缩略图、按钮、参数控件、状态栏） |
+| `apng.js` | **APNG 编码器**：CRC32、PNG 解析、IHDR/acTL/fcTL/IDAT/fdAT/IEND 重组、自实现 PNG 兜底编码、结构自检 |
+| `render.js` | 帧几何与画面合成：`contain` 缩放、扫描线擦除场景、时间线（`buildSpecs`）、帧差包围盒（`diffBounds`） |
+| `app.js` | 状态、交互（添加 / 排序 / 移除 / 粘贴）、预览播放器、体积逼近与导出 |
+
+五个文件都在同一目录，逐个拷贝到任意位置即可运行。没有任何第三方依赖（CSS、脚本、字体、图片全为本地或内联），也没有 `type="module"`：三个脚本用普通 `<script src>` 顺序引入，因此 `file://` 协议下不会触发 CORS 限制。
+
+运行时不联网、不写本地存储、不发送任何数据。
+
+---
+
+## APNG 编码实现要点
+
+`apng.js` 自己拼装 PNG/APNG 容器，不依赖任何库：
+
+**1. 帧数据来源。** 每帧用一个离屏 `<canvas>` 画好，`canvas.toBlob('image/png')` 取到 PNG 字节后用 `FileReader`/`arrayBuffer` 读入，解析出 `IHDR` 与全部 `IDAT` 数据（自动拼接多段 IDAT）。
+
+**2. 帧差编码（窄带增量）。** 扫描线擦除每帧只有一条竖带变化，因此与前一帧做逐像素比较、取变化区域的包围盒，只把这条窄带渲染成小画布再编码，靠 `fcTL` 的 `x_offset / y_offset` 写到正确位置。一圈动画的总编码量约等于 `(N+1)` 张整图，**与过渡时长、帧数无关** —— 所以把过渡调慢不会增加体积。每张图的「停留」被合并进前一帧的 `delay_num`，成本为零。
+
+**3. 容器结构。**
+
+```
+PNG Signature
+IHDR                  画布尺寸 / 位深 / 颜色类型
+acTL                  num_frames, num_plays=0（无限循环）
+fcTL (frame 0)        seq=0, 宽高偏移, delay, dispose=0, blend=0
+IDAT                  第一帧像素数据（不占序号）
+fcTL (frame i)        seq++
+fdAT (frame i)        4 字节 seq++ + 与 IDAT 相同格式的压缩数据
+...
+IEND
+```
+
+- **首帧用 `IDAT`**，后续帧用 `fdAT`（`fdAT` 数据前多 4 字节序列号）；
+- 序列号在 `fcTL` 与每个 `fdAT` 上**各自递增**，不复用；
+- CRC32 用标准多项式 `0xEDB88320`（反射）自实现查表计算，覆盖「类型 + 数据」；
+- `dispose_op = 0`（不清除，供窄带增量叠加）、`blend_op = 0`（整块覆盖，确保帧差区域被替换而不是混合）；
+- 帧延时统一写成 `delay_num / delay_den = N / 1000`。
+
+**4. 兜底路径。** 极少数环境下 canvas 导出的 PNG 颜色类型不一致，此时自动切换为「自实现 PNG 编码」（`CompressionStream('deflate')` 做 zlib 压缩）重新编码，保证产物始终是结构合法的 APNG。
+
+**5. 结构自检。** `APNG.inspectAPNG(bytes)` 可对编码结果做一次结构走查（签名、块顺序、序号连续性、CRC），仅在控制台手工调用，正常流程不依赖它。
+
+> 说明：APNG 是无损容器，不做调色板量化，所以体积通常比 256 色的 GIF 大；这是无损格式的固有代价。本项目的体积控制手段是**帧差增量 + 自动降分辨率**。
+*（内容由AI生成，仅供参考）*
