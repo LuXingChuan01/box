@@ -16,6 +16,9 @@
    * 把图片按 contain 方式缩放并居中绘制（不裁切，比例不一致处留边）。
    */
   function drawContain(ctx, img, W, H) {
+    // 高质量插值：canvas 默认缩放质量为 low，缩小大图时会有锯齿与摩尔纹
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
     var iw = img.naturalWidth || img.width;
     var ih = img.naturalHeight || img.height;
     if (!iw || !ih) return;
@@ -35,6 +38,8 @@
    */
   function drawScene(ctx, W, H, scene, images, bgColor) {
     ctx.save();
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
     ctx.clearRect(0, 0, W, H);
     ctx.fillStyle = bgColor || '#ffffff';
     ctx.fillRect(0, 0, W, H);

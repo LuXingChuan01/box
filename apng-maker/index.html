@@ -97,10 +97,10 @@
     <div class="field">
       <label>目标体积</label>
       <div class="row">
-        <div class="numbox"><input id="num-target" type="number" min="0.05" max="100" step="0.1" value="1.0" /><span>MB</span></div>
+        <div class="numbox"><input id="num-target" type="number" min="0.05" max="100" step="0.1" value="3.0" /><span>MB</span></div>
         <label class="check"><input id="chk-unlimited" type="checkbox" /> 不限</label>
       </div>
-      <p class="tip">超限时按 640 → 480 → 384 → 320 逐级降低分辨率重编，并告知最终降到了多少。</p>
+      <p class="tip">超限时按 1600 → 1280 → 1024 → 800 → 640 → 512 逐级降低分辨率重编，并告知最终降到了多少；画布最长边上限 1920px，想要最高画质可勾选「不限」。</p>
     </div>
 
     <button id="btn-export" class="btn btn-primary btn-block" type="button">导出 .apng</button>

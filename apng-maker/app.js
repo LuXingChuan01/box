@@ -10,11 +10,11 @@
   var APNG = window.APNG;
   var R = window.RENDER;
 
-  var MAX_BASE = 1280;        // 画布基准最长边上限（避免首图过大导致编码极慢）
+  var MAX_BASE = 1920;        // 画布基准最长边上限（尽量保留原图细节，避免画质被过度压缩）
   var FRAME_INTERVAL = 40;    // 扫描线每步间隔（ms），约 25 步/秒
   var DELAY_DEN = 1000;       // APNG 帧延时分母
   // 体积超限时的降分辨率顺序（按最长边像素档位）
-  var RES_STEPS = [640, 480, 384, 320];
+  var RES_STEPS = [1600, 1280, 1024, 800, 640, 512];
 
   var state = {
     items: [],              // { name, img, url }
@@ -23,7 +23,7 @@
     holdMs: 700,
     bg: 'white',            // 'white' | 'black' | 'dominant'
     unlimited: false,
-    targetBytes: 1048576,   // 1.0MB
+    targetBytes: 3145728,   // 3.0MB（默认值放宽，避免一上来就触发降分辨率）
     baseW: 640,
     baseH: 360,
     dominant: '#ffffff',
