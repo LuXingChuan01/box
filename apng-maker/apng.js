@@ -338,6 +338,7 @@
   root.APNG = {
     crc32: crc32,
     makeChunk: makeChunk,
+    concatBytes: concatBytes,
     parsePNG: parsePNG,
     assembleAPNG: assembleAPNG,
     encodePNGFromImageData: encodePNGFromImageData,
